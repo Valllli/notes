@@ -12,20 +12,21 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
-}
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '1'
+def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
 
 android {
-    namespace "com.example.text_recognitions"
+    namespace "com.example.notes"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
+
+    defaultConfig {
+        applicationId "com.example.notes" // ← убедись, что соответствует фактическому названию
+        minSdkVersion 24 // ← обязательно 24+ для flutter_sound
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -40,22 +41,9 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.text_recognitions"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
-    }
-
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.debug // ← замени на релизный ключ позже
         }
     }
 }
@@ -64,4 +52,6 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    // Все зависимости через pubspec.yaml, можно оставить пустым
+}
