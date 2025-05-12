@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:notes/presentation/viewmodels/audio_view_model.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +73,7 @@ class _AudioNoteScreenBodyState extends State<_AudioNoteScreenBody> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<AudioNoteViewModel>();
-    final isAudioAvailable = vm.audioPath != null && File(vm.audioPath!).existsSync();
+    final isAudioAvailable = vm.audioPath != null;
     final noteVM = context.read<NoteViewModel>();
 
     return Scaffold(
@@ -156,7 +154,9 @@ class _AudioNoteScreenBodyState extends State<_AudioNoteScreenBody> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: vm.deleteRecording,
+                      onPressed: () {
+                        vm.deleteRecording();
+                      },
                     ),
                     const SizedBox(width: 8),
                     const Text('Запись готова'),

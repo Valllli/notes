@@ -38,6 +38,10 @@ class AudioNoteViewModel extends ChangeNotifier {
     final hasPermission = await _recorder.hasPermission();
     if (!hasPermission) return;
 
+    if (await _recorder.isRecording()) {
+      await _recorder.stop();
+    }
+
     final dir = await getApplicationDocumentsDirectory();
     final path = '${dir.path}/${const Uuid().v4()}.m4a';
 
@@ -75,12 +79,23 @@ class AudioNoteViewModel extends ChangeNotifier {
   }
 
   void deleteRecording() {
-    stopRecording(); // на всякий случай
+    if (_isRecording) {
+      stopRecording();
+    } else {
+      _isRecording = false;
+    }
+
     if (_audioPath != null) {
       final file = File(_audioPath!);
-      if (file.existsSync()) file.deleteSync();
+      if (file.existsSync()) {
+        debugPrint('[DEBUG] Deleting file at $_audioPath');
+        file.deleteSync();
+        debugPrint('[DEBUG] File deleted');
+      }
     }
+
     _audioPath = null;
+    _recordDuration = Duration.zero;
     notifyListeners();
   }
 
